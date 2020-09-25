@@ -1,6 +1,5 @@
-package kg.geektech.courses.android3.lesson1sept.ui.main;
+package kg.geektech.courses.android3.lesson1sept.adapters;
 
-import android.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,10 +13,16 @@ import java.util.List;
 
 import kg.geektech.courses.android3.lesson1sept.R;
 import kg.geektech.courses.android3.lesson1sept.data.models.FilmModel;
+import kg.geektech.courses.android3.lesson1sept.interfaces.OnFilmClickListener;
 
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.FilmHolder> {
 
     List<FilmModel> filmModels = new ArrayList<>();
+    OnFilmClickListener listener;
+
+    public void setListener(OnFilmClickListener listener) {
+        this.listener = listener;
+    }
 
     public void setFilmModels(List<FilmModel> filmModels) {
         this.filmModels = filmModels;
@@ -50,6 +55,12 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.FilmHolder> {
             super(itemView);
             title = itemView.findViewById(R.id.title_tv);
             director = itemView.findViewById(R.id.director_tv);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.onClick(getAdapterPosition());
+                }
+            });
         }
 
         public void onBind(String title,String director){

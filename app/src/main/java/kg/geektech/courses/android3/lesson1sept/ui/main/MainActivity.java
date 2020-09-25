@@ -3,24 +3,31 @@ package kg.geektech.courses.android3.lesson1sept.ui.main;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import kg.geektech.courses.android3.lesson1sept.App;
 import kg.geektech.courses.android3.lesson1sept.R;
+import kg.geektech.courses.android3.lesson1sept.adapters.MainAdapter;
 import kg.geektech.courses.android3.lesson1sept.data.models.Book;
 import kg.geektech.courses.android3.lesson1sept.data.models.FilmModel;
 import kg.geektech.courses.android3.lesson1sept.data.network.GhibliService;
+import kg.geektech.courses.android3.lesson1sept.interfaces.OnFilmClickListener;
+import kg.geektech.courses.android3.lesson1sept.ui.film.FilmActivity;
 
 public class MainActivity
         extends AppCompatActivity
         implements MainContract.View {
 
+    public static final String FILM_ID = "filmId";
+
     RecyclerView recyclerView;
     MainAdapter mainAdapter;
+    List<FilmModel> filmModels = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +42,7 @@ public class MainActivity
             @Override
             public void onSuccess(List<FilmModel> filmModel) {
                 Log.d("GHIBLI", String.valueOf(filmModel.size()));
+                filmModels = filmModel;
                 mainAdapter.setFilmModels(filmModel);
             }
 
@@ -44,7 +52,15 @@ public class MainActivity
             }
         });
 
-
+        mainAdapter.setListener(new OnFilmClickListener() {
+            @Override
+            public void onClick(int position) {
+                Intent intent = new Intent(MainActivity.this, FilmActivity.class);
+                intent.putExtra(FILM_ID,filmModels.get(position).getId());
+                Log.d("ID",filmModels.get(position).getId());
+                startActivity(intent);
+            }
+        });
 
     }
 
